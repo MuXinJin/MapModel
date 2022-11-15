@@ -92,6 +92,7 @@
   const loader = new THREE.GLTFLoader();
   for (let i = 0; i < models.length; i++) {
     loader.load(models[i].path, gltf => {
+      gltf.scene.scale.set(10,10,10) // scale here
       const model = gltf.scene.children[0];
       model.userData.info = models[i].info;
       for (let i = 0; i < model.children.length; i++) {
