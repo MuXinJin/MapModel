@@ -61,14 +61,32 @@
   const sky = engine.add(new mapvthree.EmptySky());
   sky.time = 3600 * 16.5;
   let position = engine.map.projectPointArr(center);
-  position.push(20);
+  position.push(6);
   // 模型
   const models = [
     {
       // position: [11450154.194580125, 2836905.364951145, 20],//模型的位置
-      position: position,
+      position: [11450154.194580125, 2836905.364951145, 6],
+      path: './inforch.gltf',//替换模型
+      info: 'inforch'
+    },
+       {
+      // position: [11450154.194580125, 2836905.364951145, 20],//模型的位置
+      position:  [11452154.194580125, 2836505.364951145, 6],
+      path: './new_buiding.gltf',//替换模型
+      info: 'new_buiding'
+    },
+       {
+      // position: [11450154.194580125, 2836905.364951145, 20],//模型的位置
+      position:  [11456154.194580125, 2836305.364951145, 2],
+      path: './Bbuilding.gltf',//替换模型
+      info: 'Bbuilding'
+    },
+       {
+      // position: [11450154.194580125, 2836905.364951145, 20],//模型的位置
+      position:  [11452154.194580125, 2836105.364951145, 2],
       path: './1.gltf',//替换模型
-      info: '玻璃'
+      info: '1'
     },
   ];
   const loader = new THREE.GLTFLoader();
