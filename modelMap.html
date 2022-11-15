@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <title>根据城市设置城市中心点</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <style>
+    body,
+    html,
+    #container {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+  </style>
+  <script src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=AFR22qgYNLAj2LXqyEAa3GEHw7biFwOt"></script>
+  <script src="https://unpkg.com/mapv-three@1.0.1/dist/mapvthree.umd.js"></script>
+  <script src=" https://cdnjs.cloudflare.com/ajax/libs/three.js/0.145.0/three.min.js"></script>
+  <script src="./GLTFLoader.js"></script>
+
+</head>
+
+<body>
+  <div id="container"></div>
+</body>
+
+</html>
+<script>
+  // var map = new BMapGL.Map('container'); // 创建Map实例
+  // map.centerAndZoom('上海市', 12); // 初始化地图,设置中心点坐标和地图级别
+  // map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+
+  const center = [102.857366, 24.831084];
+  const map = new BMapGL.Map('container', {
+    restrictCenter: false,
+    maxZoom: 25,
+    displayOptions: {
+      building: false,
+    },
+  });
+  map.centerAndZoom(new BMapGL.Point(center[0], center[1]), 21);
+  map.enableScrollWheelZoom(true);
+  map.enableKeyboard();
+  map.enableInertialDragging();
+  map.enableContinuousZoom();
+  map.setTilt(65);
+  map.setHeading(-50);
+  const engine = new mapvthree.Engine(map, {});
+  engine.map.setCenter(center);
+  engine.rendering.useMrt = true;
+  engine.rendering.shadow.enabled = true;
+  engine.rendering.animationLoopFrameTime = 40;
+  engine.rendering.colorAdjust.saturation = 0.25;
+  engine.rendering.colorAdjust.contrast = 0.15;
+  engine.rendering.colorAdjust.brightness = 0;
+  const sky = engine.add(new mapvthree.EmptySky());
+  sky.time = 3600 * 16.5;
+  const position = engine.map.projectPointArr(center);
+  // 模型
+  const models = [
+    {
+      // position: [12941311, 4845891, 0],//模型的位置
+      position: engine.map.projectPointArr(center),
+      path: './1.gltf',//替换模型
+      rotate: true,
+      info: '玻璃'
+    },
+  ];
+  const loader = new THREE.GLTFLoader();
+  for (let i = 0; i < models.length; i++) {
+    loader.load(models[i].path, gltf => {
+      const model = gltf.scene.children[0];
+      model.userData.info = models[i].info;
+      for (let i = 0; i < model.children.length; i++) {
+        model.children[i].castShadow = true;
+      }
+      model.position.set(models[i].position[0], models[i].position[1], models[i].position[2]);
+      if (models[i].rotate) {
+        model.rotation.x = Math.PI / 2;
+        model.rotation.y = 1.08 * Math.PI / 2;
+      }
+      engine.add(model);
+      // 模型添加点击事件
+      engine.event.markEventProxy(model);
+      engine.event.bind(model, 'click', e => {
+        console.log(model)
+        alert('点击了 ' + model.userData.info);//这是点击后显示弹窗提示，如果需要可以删掉这一行
+      });
+    });
+  }
+
+</script>
