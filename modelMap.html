@@ -61,11 +61,12 @@
   const sky = engine.add(new mapvthree.EmptySky());
   sky.time = 3600 * 16.5;
   let position = engine.map.projectPointArr(center);
+  position.push(0);
   // 模型
   const models = [
     {
       // position: [11450154.194580125, 2836905.364951145, 0],//模型的位置
-      position: [11450154.194580125, 2836905.364951145, 0],
+      position: position,
       path: './inforch.gltf',//替换模型
       rotate: true,
       info: '玻璃'
