@@ -60,45 +60,42 @@
   engine.rendering.colorAdjust.brightness = 0;
   const sky = engine.add(new mapvthree.EmptySky());
   sky.time = 3600 * 16.5;
-  let position = engine.map.projectPointArr(center);
-  position.push(6);
-  // 模型
+  const position = engine.map.projectPointArr(center).push(0);//0代表Z轴高度
+  // 模型可以放多个模型，但是需要自行调整position，该position有三个数据分别代表x轴,y轴,z轴
   const models = [
     {
-      // position: [11450154.194580125, 2836905.364951145, 20],//模型的位置
-      position: [11450154.194580125, 2836905.364951145, 6],
-      path: './inforch.glb',//替换模型
-      info: 'inforch'
+      // position: [12941311, 4845891, 0],//模型的位置
+      position: [11456154.194580125, 2836305.364951145, 0],
+      path: './1.gltf',//替换模型
+      rotate: false,//是否旋转
+      info: '1',//模型的名称
+      scale: [10, 20, 30],//放大或缩小倍率
     },
-       {
-      // position: [11450154.194580125, 2836905.364951145, 20],//模型的位置
-      position:  [11452154.194580125, 2836505.364951145, 6],
-      path: './new_buiding.glb',//替换模型
-      info: 'new_buiding'
-    },
-       {
-      // position: [11450154.194580125, 2836905.364951145, 20],//模型的位置
-      position:  [11456154.194580125, 2836305.364951145, 2],
-      path: './Bbuilding.glb',//替换模型
-      info: 'Bbuilding'
-    },
-       {
-      // position: [11450154.194580125, 2836905.364951145, 20],//模型的位置
-      position:  [11452154.194580125, 2836105.364951145, 2],
-      path: './1.glb',//替换模型
-      info: '1'
+    {
+      // position: [12941311, 4845891, 0],//模型的位置
+      position: [11452154.194580125, 2836505.364951145, 0],
+      path: './Bbuilding.gltf',//替换模型
+      rotate: false,//是否旋转
+      info: 'Bbuilding',//模型的名称
+      scale: [10, 20, 30],//放大或缩小倍率
     },
   ];
   const loader = new THREE.GLTFLoader();
   for (let i = 0; i < models.length; i++) {
     loader.load(models[i].path, gltf => {
-      gltf.scene.scale.set(10,10,10) // scale here
       const model = gltf.scene.children[0];
       model.userData.info = models[i].info;
       for (let i = 0; i < model.children.length; i++) {
         model.children[i].castShadow = true;
       }
       model.position.set(models[i].position[0], models[i].position[1], models[i].position[2]);
+      if (models[i].rotate) {
+        model.rotation.x = Math.PI / 2;
+        model.rotation.y = 1.08 * Math.PI / 2;
+      }
+      if (models[i].scale) {
+        model.scale.set(models[i].scale[0], models[i].scale[1], models[i].scale[2])
+      }
       engine.add(model);
       // 模型添加点击事件
       engine.event.markEventProxy(model);
